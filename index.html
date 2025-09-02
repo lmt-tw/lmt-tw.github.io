@@ -2,45 +2,45 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Web AR Repsparatory Simulation</title>
+    <title>Respatory AR Simulation</title>
     <script src="https://raw.githack.com/fcor/arjs-gestures/master/dist/gestures.js"></script>
     <!-- Load A-Frame and AR.js -->
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@6.1.0/dist/aframe-extras.min.js"></script>
+
 </head>
 <body>
 
 <a-scene
   arjs
   embedded
-    renderer="logarithmicDepthBuffer: true;"
+  renderer="logarithmicDepthBuffer: true; "
+
   vr-mode-ui="enabled: false"
   gesture-detector
   id="scene"
 >
   <a-assets>
     <a-asset-item
-      id="resparatory-particles-model"
-      src="./models/particles_.glb"
+      id="resperatory-glb-model"
+      src="./models/particles.glb"
       response-type="arraybuffer"
     >
     </a-asset-item>
   </a-assets>
 
-  <a-marker rotatescale id="resparatory-particles-model-marker" type="pattern" url="./marker/pattern-lung_copilot_marker.patt">
-    <a-entity id="resparatory-particles-model-parent-entity" scale="5 5 5" position="0 0 0" rotation="0 0 0">
+      <a-marker rotatescale id="resperatory-glb-model-marker" type="pattern" url="./marker/pattern-lung_copilot_marker.patt">
       <a-entity
-        id="resparatory-particles-model-child-entity"
+        id="resperatory-glb-model-child-entity"
         animation-mixer="loop: repeat; timeScale: 1"
-        gltf-model="#resparatory-particles-model"
-        position="0 0 0"
-       >
-        
-      </a-entity>
+        gltf-model="#resperatory-glb-model"
+        scale="0.25 0.25 0.25"
+      position="0 0 0">
+
     </a-entity>
   </a-marker>
-
 
   <a-entity camera></a-entity>
         <a-entity
@@ -52,14 +52,21 @@
 <script>
 AFRAME.registerComponent("rotatescale", {
     init: function() {
-        var element = document.querySelector('body');
-        var hammerEl = new Hammer(element);
+        let element = document.querySelector('body');
+        let hammerEl = new Hammer(element);
 
         this.marker = document.querySelector('a-marker'); // Component rotatescale needs to be applied on the a-marker tag
-        var model = this.marker.querySelector('a-entity');
+        let model = this.marker.querySelector('a-entity');
 
-        var pinch = new Hammer.Pinch(); // Pinch is not by default in the recognizers
+        let pinch = new Hammer.Pinch(); // Pinch is not by default in the recognizers
         hammerEl.add(pinch); // Add it to the Manager instance
+
+             let initialScale = { x: 1, y: 1, z: 1 }; // default
+        hammerEl.on("pinchstart", () => {
+            // Store the current scale when pinch starts
+            const currentScale = model.getAttribute("scale");
+            initialScale = { ...currentScale };
+        });
 
         hammerEl.on('pan', (ev) => {
             let rotation = model.getAttribute("rotation");
@@ -82,9 +89,14 @@ AFRAME.registerComponent("rotatescale", {
             model.setAttribute("rotation", rotation);
         });
 
-        hammerEl.on("pinch", (ev) => {
-            let scale = {x: ev.scale, y: ev.scale, z: ev.scale};
-            model.setAttribute("scale", scale);
+   hammerEl.on("pinch", (ev) => {
+            // Apply scale relative to initial scale
+            let newScale = {
+                x: initialScale.x * ev.scale,
+                y: initialScale.y * ev.scale,
+                z: initialScale.z * ev.scale,
+            };
+            model.setAttribute("scale", newScale);
         });
     }
 });
