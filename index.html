@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Respatory AR Simulation</title>
-    <script src="https://raw.githack.com/fcor/arjs-gestures/master/dist/gestures.js"></script>
+  
     <!-- Load A-Frame and AR.js -->
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.min.js"></script>
@@ -19,7 +19,6 @@
   renderer="logarithmicDepthBuffer: true; "
 
   vr-mode-ui="enabled: false"
-  gesture-detector
   id="scene"
 >
   <a-assets>
@@ -57,7 +56,7 @@ AFRAME.registerComponent("rotatescale", {
         let hammerEl = new Hammer(element);
 
         this.marker = document.querySelector('a-marker'); // Component rotatescale needs to be applied on the a-marker tag
-        let model = this.marker.querySelector('a-entity');
+        let model = this.marker.querySelector('#resperatory-glb-model-child-entity');
 
         let pinch = new Hammer.Pinch(); // Pinch is not by default in the recognizers
         hammerEl.add(pinch); // Add it to the Manager instance
@@ -68,25 +67,25 @@ AFRAME.registerComponent("rotatescale", {
             const currentScale = model.getAttribute("scale");
             initialScale = { ...currentScale };
         });
-
+        //2 - left, 4 - right, 8 - up, 16 - down
         hammerEl.on('pan', (ev) => {
             let rotation = model.getAttribute("rotation");
             switch(ev.direction) {
-                case 2: // DIRECTION_LEFT from https://hammerjs.github.io/api/
-                    rotation.y = rotation.y - 2;
-                    break;
-                case 4: // DIRECTION_RIGHT from https://hammerjs.github.io/api/
-                    rotation.y = rotation.y + 2;
-                    break;
-                case 8: // DIRECTION_UP from https://hammerjs.github.io/api/
-                    rotation.x = rotation.x - 2;
-                    break;
-                case 16: // DIRECTION_DOWN from https://hammerjs.github.io/api/
-                    rotation.x = rotation.x + 2;
-                    break;
-                default:
-                    break;
-            }
+       case 2:
+         rotation.y = rotation.y + 4
+         break;
+       case 4:
+         rotation.y = rotation.y - 4
+         break;
+       case 8:
+         rotation.x = rotation.x + 4
+         break;
+       case 16:
+         rotation.x = rotation.x - 4
+         break;
+       default:
+         break;
+     }
             model.setAttribute("rotation", rotation);
         });
 
