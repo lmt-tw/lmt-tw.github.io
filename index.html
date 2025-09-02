@@ -67,6 +67,7 @@ AFRAME.registerComponent("rotatescale", {
             const currentScale = model.getAttribute("scale");
             initialScale = { ...currentScale };
         });
+        hammerEl.get('pan').set({ direction: Hammer.DIRECTION_ALL });
         //2 - left, 4 - right, 8 - up, 16 - down
         hammerEl.on('pan', (ev) => {
             let rotation = model.getAttribute("rotation");
