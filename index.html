@@ -61,6 +61,7 @@ AFRAME.registerComponent("rotatescale", {
 
         let pinch = new Hammer.Pinch(); // Pinch is not by default in the recognizers
         hammerEl.add(pinch); // Add it to the Manager instance
+
              let initialScale = { x: 1, y: 1, z: 1 }; // default
         hammerEl.on("pinchstart", () => {
             // Store the current scale when pinch starts
@@ -101,5 +102,6 @@ AFRAME.registerComponent("rotatescale", {
     }
 });
 </script>
+
 </body>
 </html>
