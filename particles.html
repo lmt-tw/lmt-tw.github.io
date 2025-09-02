@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://raw.githack.com/fcor/arjs-gestures/master/dist/gestures.js"></script>
+    <!-- Load A-Frame and AR.js -->
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+</head>
+<body>
+
+<a-scene
+  arjs
+  embedded
+    renderer="logarithmicDepthBuffer: true;"
+  vr-mode-ui="enabled: false"
+  gesture-detector
+  id="scene"
+>
+  <a-assets>
+    <a-asset-item
+      id="resparatory-particles-model"
+      src="./models/particles.glb"
+      response-type="arraybuffer"
+    >
+    </a-asset-item>
+  </a-assets>
+
+  <a-marker rotatescale id="resparatory-particles-model-marker" type="pattern" url="./marker/pattern-lung_copilot_marker.patt">
+    <a-entity id="resparatory-particles-model-parent-entity" scale="5 5 5" position="0 0 0" rotation="0 0 0">
+      <a-entity
+        id="resparatory-particles-model-child-entity"
+        gltf-model="#resparatory-particles-model"
+        scale="1 1 1"
+        position="0 0 0"
+        rotation="0 0 0"
+        animation-mixer="loop: repeat; timeScale: 1">
+        
+      </a-entity>
+    </a-entity>
+  </a-marker>
+
+  <a-entity camera></a-entity>
+   <a-entity light="type: spot; angle: 90"></a-entity>
+</a-scene>
+
+<script>
+AFRAME.registerComponent("rotatescale", {
+    init: function() {
+        var element = document.querySelector('body');
+        var hammerEl = new Hammer(element);
+
+        this.marker = document.querySelector('a-marker'); // Component rotatescale needs to be applied on the a-marker tag
+        var model = this.marker.querySelector('a-entity');
+
+        var pinch = new Hammer.Pinch(); // Pinch is not by default in the recognizers
+        hammerEl.add(pinch); // Add it to the Manager instance
+
+        hammerEl.on('pan', (ev) => {
+            let rotation = model.getAttribute("rotation");
+            switch(ev.direction) {
+                case 2: // DIRECTION_LEFT from https://hammerjs.github.io/api/
+                    rotation.y = rotation.y - 2;
+                    break;
+                case 4: // DIRECTION_RIGHT from https://hammerjs.github.io/api/
+                    rotation.y = rotation.y + 2;
+                    break;
+                case 8: // DIRECTION_UP from https://hammerjs.github.io/api/
+                    rotation.x = rotation.x - 2;
+                    break;
+                case 16: // DIRECTION_DOWN from https://hammerjs.github.io/api/
+                    rotation.x = rotation.x + 2;
+                    break;
+                default:
+                    break;
+            }
+            model.setAttribute("rotation", rotation);
+        });
+
+        hammerEl.on("pinch", (ev) => {
+            let scale = {x: ev.scale, y: ev.scale, z: ev.scale};
+            model.setAttribute("scale", scale);
+        });
+    }
+});
+</script>
+
+</body>
+</html>
