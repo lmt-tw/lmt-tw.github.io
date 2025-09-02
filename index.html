@@ -28,21 +28,26 @@
     </a-asset-item>
   </a-assets>
 
-  <a-marker rotatescale id="resparatory-particles-model-marker" type="pattern" url="./marker/pattern-lung_logo_marker.patt">
+  <a-marker rotatescale id="resparatory-particles-model-marker" type="pattern" url="./marker/pattern-lung_copilot_marker.patt">
     <a-entity id="resparatory-particles-model-parent-entity" scale="5 5 5" position="0 0 0" rotation="0 0 0">
       <a-entity
         id="resparatory-particles-model-child-entity"
+        animation-mixer="loop: repeat; timeScale: 1"
         gltf-model="#resparatory-particles-model"
         scale="0.25 0.25 0.25"
-         position="0 0 0"
-        animation-mixer="loop: repeat; timeScale: 1">
+        position="0 0 0"
+       >
         
       </a-entity>
     </a-entity>
   </a-marker>
 
+
   <a-entity camera></a-entity>
-   <a-entity light="type: spot; angle: 90"></a-entity>
+        <a-entity
+      light="type: point; intensity: 2; decay: 2"
+      position="0 0 0">
+    </a-entity>
 </a-scene>
 
 <script>
