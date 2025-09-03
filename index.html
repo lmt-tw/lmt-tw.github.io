@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Respatory AR Simulation</title>
+    <title>AR Respiratory Simulation</title>
   
     <!-- Load A-Frame and AR.js -->
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
@@ -12,7 +12,7 @@
 
 </head>
 <body>
-
+<h1>Please Confirm Camera access & Scan marker</h1>
 <a-scene
   arjs
   embedded
@@ -59,8 +59,13 @@ AFRAME.registerComponent("rotatescale", {
         let model = this.marker.querySelector('#resperatory-glb-model-child-entity');
 
         let pinch = new Hammer.Pinch(); // Pinch is not by default in the recognizers
-        hammerEl.add(pinch); // Add it to the Manager instance
+         hammerEl.add(pinch); // Add it to the Manager instance
 
+        let rotate = new Hammer.Rotate();
+        hammeerEl.add(rotate)
+       
+
+             
              let initialScale = { x: 1, y: 1, z: 1 }; // default
         hammerEl.on("pinchstart", () => {
             // Store the current scale when pinch starts
